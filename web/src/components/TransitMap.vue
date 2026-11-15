@@ -26,6 +26,13 @@ const showLabels = ref(false);
 const uniformMarkers = ref(false);
 const isLegendCollapsed = ref(false);
 const isolateSouthIndia = ref(true);
+const directWheelZoom = ref(false);
+const showScrollOverlay = ref(false);
+let overlayTimer: number | null = null;
+let lastZoomTime = 0;
+
+const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
+const modifierKey = isMac ? '⌘' : 'Ctrl';
 
 let maskLayer: L.GeoJSON | null = null;
 let stateBoundaryLayer: L.GeoJSON | null = null;
@@ -139,9 +146,14 @@ function initMap() {
     minZoom: 6,
     maxZoom: 16,
     zoomControl: false,
+    scrollWheelZoom: false, // Prevents scroll trapping so webpage scrolls naturally
     maxBounds: southIndiaBounds,
     maxBoundsViscosity: 1.0
   });
+
+  // Attach non-passive wheel listener for gesture handling (Google Maps style)
+  mapContainer.value.addEventListener('wheel', onMapWheel, { passive: false });
+  mapContainer.value.addEventListener('mouseleave', onMapMouseLeave);
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -391,11 +403,78 @@ watch(isolateSouthIndia, (val) => {
   }
 });
 
+function onMapWheel(e: WheelEvent) {
+  if (directWheelZoom.value) {
+    // Direct wheel zoom mode enabled by user; Leaflet handles it natively
+    return;
+  }
+
+  if (e.ctrlKey || e.metaKey) {
+    // User is intentionally holding Ctrl / Cmd: Zoom the map, prevent page zoom
+    e.preventDefault();
+    hideScrollOverlay();
+
+    if (!map) return;
+    const now = Date.now();
+    if (now - lastZoomTime < 60) return;
+    lastZoomTime = now;
+
+    const mousePoint = map.mouseEventToContainerPoint(e);
+    const currentZoom = map.getZoom();
+    const zoomDelta = e.deltaY < 0 ? 1 : -1;
+    const newZoom = Math.min(map.getMaxZoom(), Math.max(map.getMinZoom(), currentZoom + zoomDelta));
+    if (newZoom !== currentZoom) {
+      map.setZoomAround(mousePoint, newZoom, { animate: true });
+    }
+  } else {
+    // Normal scroll: DO NOT call e.preventDefault(), allowing the browser to scroll the webpage naturally!
+    triggerScrollOverlay();
+  }
+}
+
+function triggerScrollOverlay() {
+  showScrollOverlay.value = true;
+  if (overlayTimer) clearTimeout(overlayTimer);
+  overlayTimer = window.setTimeout(() => {
+    showScrollOverlay.value = false;
+  }, 1200);
+}
+
+function hideScrollOverlay() {
+  showScrollOverlay.value = false;
+  if (overlayTimer) {
+    clearTimeout(overlayTimer);
+    overlayTimer = null;
+  }
+}
+
+function onMapMouseLeave() {
+  hideScrollOverlay();
+}
+
+watch(directWheelZoom, (enabled) => {
+  if (!map) return;
+  if (enabled) {
+    map.scrollWheelZoom.enable();
+    hideScrollOverlay();
+  } else {
+    map.scrollWheelZoom.disable();
+  }
+});
+
 onMounted(() => {
   initMap();
 });
 
 onBeforeUnmount(() => {
+  if (mapContainer.value) {
+    mapContainer.value.removeEventListener('wheel', onMapWheel);
+    mapContainer.value.removeEventListener('mouseleave', onMapMouseLeave);
+  }
+  if (overlayTimer) {
+    clearTimeout(overlayTimer);
+    overlayTimer = null;
+  }
   if (map) {
     map.remove();
     map = null;
@@ -482,6 +561,18 @@ onBeforeUnmount(() => {
     <!-- Leaflet Canvas -->
     <div ref="mapContainer" class="leaflet-map-canvas"></div>
 
+    <!-- Gesture Guidance Overlay (Google Maps Style) -->
+    <transition name="gesture-fade">
+      <div v-if="showScrollOverlay" class="map-gesture-overlay">
+        <div class="gesture-pill">
+          <span class="gesture-icon">🖱️</span>
+          <span class="gesture-text">
+            Use <kbd class="gesture-kbd">{{ modifierKey }}</kbd> + <strong>scroll</strong> to zoom the map
+          </span>
+        </div>
+      </div>
+    </transition>
+
     <!-- Interactive Map Legend & Controls -->
     <div :class="['map-legend-card', { collapsed: isLegendCollapsed }]">
       <!-- Legend Header -->
@@ -545,6 +636,10 @@ onBeforeUnmount(() => {
             <label class="layer-toggle-item">
               <input type="checkbox" v-model="uniformMarkers" />
               <span class="toggle-text">Uniform Dots</span>
+            </label>
+            <label class="layer-toggle-item" title="Enable direct mouse wheel zoom without holding Ctrl / ⌘">
+              <input type="checkbox" v-model="directWheelZoom" />
+              <span class="toggle-text">Free Wheel Zoom</span>
             </label>
           </div>
         </div>
@@ -767,6 +862,82 @@ onBeforeUnmount(() => {
   width: 100%;
   height: 100%;
   background: #f8fafc;
+}
+
+/* Gesture Scroll Guidance Overlay (Google Maps Style) */
+.map-gesture-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 450;
+  pointer-events: none;
+}
+
+.gesture-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.4rem;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  pointer-events: none;
+  animation: gesture-pulse 1.6s infinite ease-in-out;
+}
+
+.gesture-icon {
+  font-size: 1.2rem;
+}
+
+.gesture-text {
+  letter-spacing: -0.01em;
+}
+
+.gesture-text strong {
+  color: #38bdf8;
+}
+
+.gesture-kbd {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.82rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  color: #0f172a;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
+  margin: 0 0.15rem;
+}
+
+.gesture-fade-enter-active,
+.gesture-fade-leave-active {
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+.gesture-fade-enter-from,
+.gesture-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.96);
+}
+
+@keyframes gesture-pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
 }
 
 /* Map Overlay Controls */
