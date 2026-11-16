@@ -11,9 +11,15 @@ export interface StopVertex {
   region: RegionName;
   daily_departures: number;
   daily_arrivals: number;
+  origin_departures?: number;
+  dest_arrivals?: number;
+  transit_calls?: number;
+  movement_departures?: number;
+  movement_arrivals?: number;
   in_degree: number;
   out_degree: number;
   total_daily_flow: number;
+  total_movement_flow?: number;
   services?: Record<string, number>;
 }
 
@@ -52,7 +58,10 @@ export interface DistrictMetric {
   stops_count: number;
   daily_departures: number;
   daily_arrivals: number;
+  origin_departures?: number;
+  dest_arrivals?: number;
   total_flow: number;
+  total_movement_flow?: number;
   top_hubs: HubFlow[];
 }
 
@@ -100,6 +109,8 @@ export interface TransitDataset {
   hourly_distribution: HourlyItem[];
   top_corridors: NetworkEdge[];
   top_hubs: StopVertex[];
+  top_terminal_hubs?: StopVertex[];
+  top_movement_hubs?: StopVertex[];
   vertices: StopVertex[];
   edges: NetworkEdge[];
 }

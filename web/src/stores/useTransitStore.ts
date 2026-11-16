@@ -10,6 +10,7 @@ import type {
 } from '@/types/transit';
 
 export type AppTab = 'map' | 'analytics' | 'districts' | 'corridors';
+export type HubMetricMode = 'terminal' | 'movements';
 
 interface TransitStoreState {
   dataset: TransitDataset | null;
@@ -22,6 +23,7 @@ interface TransitStoreState {
   selectedEdge: NetworkEdge | null;
   minBusWeight: number;
   activeTab: AppTab;
+  hubMetricMode: HubMetricMode;
 }
 
 export const useTransitStore = defineStore('transit', {
@@ -35,7 +37,8 @@ export const useTransitStore = defineStore('transit', {
     selectedStop: null,
     selectedEdge: null,
     minBusWeight: 0,
-    activeTab: 'map'
+    activeTab: 'map',
+    hubMetricMode: 'terminal'
   }),
 
   getters: {
@@ -195,6 +198,10 @@ export const useTransitStore = defineStore('transit', {
 
     setActiveTab(tab: AppTab): void {
       this.activeTab = tab;
+    },
+
+    setHubMetricMode(mode: HubMetricMode): void {
+      this.hubMetricMode = mode;
     },
 
     selectStop(stop: StopVertex | null): void {

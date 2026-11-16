@@ -323,9 +323,13 @@ function renderNetwork() {
 
   // 2. Draw Stop Markers
   if (showMarkers.value) {
+    const isTerminal = store.hubMetricMode === 'terminal';
     for (const v of vertices) {
       const color = getRegionColor(v.region);
-      const radius = getMarkerRadius(v.total_daily_flow);
+      const flowVal = isTerminal ? v.total_daily_flow : (v.total_movement_flow ?? v.total_daily_flow);
+      const depVal = isTerminal ? (v.origin_departures ?? v.daily_departures) : (v.movement_departures ?? v.daily_departures);
+      const arrVal = isTerminal ? (v.dest_arrivals ?? v.daily_arrivals) : (v.movement_arrivals ?? v.daily_arrivals);
+      const radius = getMarkerRadius(flowVal);
 
       const circle = L.circleMarker([v.lat, v.lon], {
         radius: radius,
@@ -346,13 +350,16 @@ function renderNetwork() {
           offset: [radius + 3, 0]
         });
       } else {
+        const depLabel = isTerminal ? 'Origin Dep' : 'Outbound Dep';
+        const arrLabel = isTerminal ? 'Dest Arr' : 'Inbound Arr';
+        const transitInfo = isTerminal && v.transit_calls ? ` | En-route: <strong>${v.transit_calls.toLocaleString()}</strong>` : '';
         circle.bindTooltip(`
           <div style="font-family: inherit; font-size: 12px;">
             <strong>${v.name}</strong> (${v.district})<br/>
             State: <strong style="color: #0284c7;">${v.state || 'Kerala'}</strong> &bull;
             Region: <span style="font-weight: 600; color: ${color};">${v.region}</span><br/>
-            Daily Flow: <strong>${v.total_daily_flow}</strong> buses<br/>
-            <span style="font-size: 11px; color: #64748b;">Departures: ${v.daily_departures} | Arrivals: ${v.daily_arrivals}</span>
+            ${isTerminal ? 'Physical Daily Buses' : 'Total Corridor Flow'}: <strong>${flowVal.toLocaleString()}</strong> buses/d<br/>
+            <span style="font-size: 11px; color: #64748b;">${depLabel}: <strong>${depVal.toLocaleString()}</strong> | ${arrLabel}: <strong>${arrVal.toLocaleString()}</strong>${transitInfo}</span>
           </div>
         `, { direction: 'top', offset: [0, -radius] });
       }
@@ -392,6 +399,7 @@ watch(
     () => store.searchQuery,
     () => store.selectedStop,
     () => store.selectedEdge,
+    () => store.hubMetricMode,
     showEdges,
     showMarkers,
     showLabels,
@@ -557,6 +565,31 @@ onBeforeUnmount(() => {
         />
       </div>
 
+      <!-- Hub Metric Mode Segmented Control -->
+      <div class="hub-mode-segmented-wrapper">
+        <span class="mode-label-prefix">Mode:</span>
+        <div class="segmented-pill-container">
+          <button
+            type="button"
+            class="segmented-pill-btn"
+            :class="{ active: store.hubMetricMode === 'terminal' }"
+            @click="store.setHubMetricMode('terminal')"
+            title="Scheduled originating & terminating runs from official timetable (major hubs prioritized)"
+          >
+            🏢 Terminal Hubs
+          </button>
+          <button
+            type="button"
+            class="segmented-pill-btn"
+            :class="{ active: store.hubMetricMode === 'movements' }"
+            @click="store.setHubMetricMode('movements')"
+            title="Total corridor departures & arrivals including wayside highway pass-throughs"
+          >
+            🔄 Total Movements
+          </button>
+        </div>
+      </div>
+
       <!-- Active Filter Badges -->
       <div class="active-map-badges">
         <span class="map-stat-badge">
@@ -630,6 +663,32 @@ onBeforeUnmount(() => {
                   🗺️ South India
                 </button>
               </div>
+            </div>
+
+            <!-- Hub Metric Calculation Mode -->
+            <div class="sheet-section">
+              <span class="sheet-section-title">Hub Metric Mode</span>
+              <div class="sheet-btn-row">
+                <button
+                  type="button"
+                  class="sheet-action-btn"
+                  :class="{ active: store.hubMetricMode === 'terminal' }"
+                  @click="store.setHubMetricMode('terminal')"
+                >
+                  🏢 Terminal Hubs
+                </button>
+                <button
+                  type="button"
+                  class="sheet-action-btn"
+                  :class="{ active: store.hubMetricMode === 'movements' }"
+                  @click="store.setHubMetricMode('movements')"
+                >
+                  🔄 Total Movements
+                </button>
+              </div>
+              <p class="sheet-section-hint">
+                {{ store.hubMetricMode === 'terminal' ? 'Timetable origin/destination departures & arrivals (major hubs prioritized).' : 'Total corridor departures & arrivals including wayside pass-throughs.' }}
+              </p>
             </div>
 
             <!-- Layer Toggles -->
@@ -878,20 +937,62 @@ onBeforeUnmount(() => {
       <!-- Quick Metrics Grid -->
       <div class="drawer-metrics">
         <div class="drawer-metric-box">
-          <span class="box-label">Total Daily Flow</span>
-          <span class="box-val highlight">{{ store.selectedStop.total_daily_flow }}</span>
+          <span class="box-label">{{ store.hubMetricMode === 'terminal' ? 'Physical Daily Buses' : 'Total Corridor Flow' }}</span>
+          <span class="box-val highlight">
+            {{ (store.hubMetricMode === 'terminal' ? store.selectedStop.total_daily_flow : (store.selectedStop.total_movement_flow ?? store.selectedStop.total_daily_flow)).toLocaleString() }}
+          </span>
           <span class="box-sub">buses / day</span>
         </div>
         <div class="drawer-metric-box">
-          <span class="box-label">Departures</span>
-          <span class="box-val">{{ store.selectedStop.daily_departures }}</span>
+          <span class="box-label">{{ store.hubMetricMode === 'terminal' ? 'Origin Departures' : 'Outbound Departures' }}</span>
+          <span class="box-val">
+            {{ (store.hubMetricMode === 'terminal' ? (store.selectedStop.origin_departures ?? store.selectedStop.daily_departures) : (store.selectedStop.movement_departures ?? store.selectedStop.daily_departures)).toLocaleString() }}
+          </span>
           <span class="box-sub">buses / day</span>
         </div>
         <div class="drawer-metric-box">
-          <span class="box-label">Arrivals</span>
-          <span class="box-val">{{ store.selectedStop.daily_arrivals }}</span>
+          <span class="box-label">{{ store.hubMetricMode === 'terminal' ? 'Terminating Arrivals' : 'Inbound Arrivals' }}</span>
+          <span class="box-val">
+            {{ (store.hubMetricMode === 'terminal' ? (store.selectedStop.dest_arrivals ?? store.selectedStop.daily_arrivals) : (store.selectedStop.movement_arrivals ?? store.selectedStop.daily_arrivals)).toLocaleString() }}
+          </span>
           <span class="box-sub">buses / day</span>
         </div>
+      </div>
+
+      <!-- Mode Switcher Pill in Drawer -->
+      <div class="drawer-mode-toggle">
+        <span class="drawer-mode-label">Mode:</span>
+        <div class="drawer-toggle-btns">
+          <button
+            type="button"
+            class="drawer-mode-btn"
+            :class="{ active: store.hubMetricMode === 'terminal' }"
+            @click="store.setHubMetricMode('terminal')"
+            title="Scheduled originating & terminating runs from official timetable"
+          >
+            🏢 Terminal Hub
+          </button>
+          <button
+            type="button"
+            class="drawer-mode-btn"
+            :class="{ active: store.hubMetricMode === 'movements' }"
+            @click="store.setHubMetricMode('movements')"
+            title="Total corridor departures & arrivals including en-route calls"
+          >
+            🔄 Total Movements
+          </button>
+        </div>
+      </div>
+
+      <!-- En-route transit calls notice (shown in terminal mode when stop has pass-through buses) -->
+      <div
+        v-if="store.hubMetricMode === 'terminal' && store.selectedStop.transit_calls && store.selectedStop.transit_calls > 0"
+        class="enroute-calls-notice"
+      >
+        <span class="enroute-icon">🚌</span>
+        <span class="enroute-text">
+          <strong>{{ store.selectedStop.transit_calls.toLocaleString() }} buses/day</strong> call at or pass through this station en route between other terminals.
+        </span>
       </div>
 
       <!-- Service breakdown for this stop -->
@@ -1672,6 +1773,140 @@ onBeforeUnmount(() => {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+/* Hub Mode Segmented Control in Top Filter Bar */
+.hub-mode-segmented-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f8fafc;
+  padding: 0.25rem 0.45rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.mode-label-prefix {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.segmented-pill-container {
+  display: flex;
+  background: #e2e8f0;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.segmented-pill-btn {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.segmented-pill-btn:hover {
+  color: #0f172a;
+}
+
+.segmented-pill-btn.active {
+  background: #ffffff;
+  color: #0284c7;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  font-weight: 700;
+}
+
+/* Drawer Mode Toggle & En-Route Notice */
+.drawer-mode-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  gap: 0.5rem;
+}
+
+.drawer-mode-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.drawer-toggle-btns {
+  display: flex;
+  background: #e2e8f0;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+  flex: 1;
+}
+
+.drawer-mode-btn {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #475569;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.drawer-mode-btn:hover {
+  color: #0f172a;
+}
+
+.drawer-mode-btn.active {
+  background: #ffffff;
+  color: #0284c7;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.enroute-calls-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.775rem;
+  color: #1e40af;
+  line-height: 1.4;
+}
+
+.enroute-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.enroute-text {
+  flex: 1;
+}
+
+.sheet-section-hint {
+  font-size: 0.725rem;
+  color: #64748b;
+  margin: 0.35rem 0 0 0;
+  line-height: 1.35;
 }
 
 .section-title {

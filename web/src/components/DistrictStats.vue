@@ -54,22 +54,46 @@ function getRegionBadgeClass(region: string): string {
           Total scheduled bus flow, departures, arrivals, and primary transit hubs across all 14 administrative districts of Kerala and connected South Indian state districts.
         </p>
       </div>
-      <div class="sort-helper">
-        <span class="sort-label">Sorted by:</span>
-        <button
-          v-for="opt in [
-            { key: 'total_flow', label: 'Total Flow' },
-            { key: 'daily_departures', label: 'Departures' },
-            { key: 'daily_arrivals', label: 'Arrivals' },
-            { key: 'stops_count', label: 'Stops' }
-          ]"
-          :key="opt.key"
-          :class="['sort-chip', { active: sortField === opt.key }]"
-          @click="toggleSort(opt.key as SortKey)"
-        >
-          {{ opt.label }}
-          <span v-if="sortField === opt.key">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
-        </button>
+      <div class="controls-toolbar">
+        <div class="mode-toggle-pill">
+          <span class="mode-label">Mode:</span>
+          <div class="mode-btns">
+            <button
+              type="button"
+              :class="['mode-chip', { active: store.hubMetricMode === 'terminal' }]"
+              @click="store.setHubMetricMode('terminal')"
+              title="Official timetable originating & terminating schedules"
+            >
+              🏢 Terminal Hubs
+            </button>
+            <button
+              type="button"
+              :class="['mode-chip', { active: store.hubMetricMode === 'movements' }]"
+              @click="store.setHubMetricMode('movements')"
+              title="Total corridor departures & arrivals including en-route calls"
+            >
+              🔄 Total Movements
+            </button>
+          </div>
+        </div>
+
+        <div class="sort-helper">
+          <span class="sort-label">Sorted by:</span>
+          <button
+            v-for="opt in [
+              { key: 'total_flow', label: 'Total Flow' },
+              { key: 'daily_departures', label: 'Departures' },
+              { key: 'daily_arrivals', label: 'Arrivals' },
+              { key: 'stops_count', label: 'Stops' }
+            ]"
+            :key="opt.key"
+            :class="['sort-chip', { active: sortField === opt.key }]"
+            @click="toggleSort(opt.key as SortKey)"
+          >
+            {{ opt.label }}
+            <span v-if="sortField === opt.key">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -89,15 +113,15 @@ function getRegionBadgeClass(region: string): string {
                 <span v-if="sortField === 'stops_count'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th @click="toggleSort('daily_departures')" class="text-right">
-                Daily Departures
+                {{ store.hubMetricMode === 'terminal' ? 'Origin Departures' : 'Outbound Departures' }}
                 <span v-if="sortField === 'daily_departures'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th @click="toggleSort('daily_arrivals')" class="text-right">
-                Daily Arrivals
+                {{ store.hubMetricMode === 'terminal' ? 'Terminating Arrivals' : 'Inbound Arrivals' }}
                 <span v-if="sortField === 'daily_arrivals'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th @click="toggleSort('total_flow')" class="text-right">
-                Total Daily Flow
+                {{ store.hubMetricMode === 'terminal' ? 'Physical Daily Flow' : 'Total Movements' }}
                 <span v-if="sortField === 'total_flow'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th>Top Transit Hubs</th>
@@ -121,10 +145,14 @@ function getRegionBadgeClass(region: string): string {
                 </span>
               </td>
               <td class="text-right number-cell">{{ d.stops_count }}</td>
-              <td class="text-right number-cell departures-col">{{ d.daily_departures.toLocaleString() }}</td>
-              <td class="text-right number-cell arrivals-col">{{ d.daily_arrivals.toLocaleString() }}</td>
+              <td class="text-right number-cell departures-col">
+                {{ (store.hubMetricMode === 'terminal' ? d.daily_departures : (d.total_movement_flow ? Math.round(d.total_movement_flow / 2) : d.daily_departures)).toLocaleString() }}
+              </td>
+              <td class="text-right number-cell arrivals-col">
+                {{ (store.hubMetricMode === 'terminal' ? d.daily_arrivals : (d.total_movement_flow ? Math.round(d.total_movement_flow / 2) : d.daily_arrivals)).toLocaleString() }}
+              </td>
               <td class="text-right number-cell flow-col">
-                <strong>{{ d.total_flow.toLocaleString() }}</strong>
+                <strong>{{ (store.hubMetricMode === 'terminal' ? d.total_flow : (d.total_movement_flow ?? d.total_flow)).toLocaleString() }}</strong>
               </td>
               <td>
                 <div class="hub-pills">
@@ -174,6 +202,55 @@ function getRegionBadgeClass(region: string): string {
   color: #64748b;
   margin: 0;
   max-width: 650px;
+}
+
+.controls-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.mode-toggle-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.mode-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+.mode-btns {
+  display: flex;
+  background: #f1f5f9;
+  border-radius: 6px;
+  padding: 2px;
+  gap: 2px;
+  border: 1px solid #e2e8f0;
+}
+
+.mode-chip {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.6rem;
+  border: none;
+  background: transparent;
+  color: #475569;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.mode-chip.active {
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .sort-helper {
