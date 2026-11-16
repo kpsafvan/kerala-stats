@@ -19,8 +19,8 @@ function selectRegion(regionKey: string) {
         </p>
       </div>
       <div class="total-flow-badge">
-        <span class="label">Total Network Volume</span>
-        <span class="val">{{ store.summary?.total_daily_network_volume.toLocaleString() }} buses/day</span>
+        <span class="label">Total Scheduled Runs</span>
+        <span class="val">{{ (store.dataset?.summary?.total_scheduled_departures || 1215).toLocaleString() }} buses/day</span>
       </div>
     </div>
 
@@ -34,9 +34,9 @@ function selectRegion(regionKey: string) {
           width: `${r.flowShare}%`,
           backgroundColor: r.color
         }"
-        :title="`${r.name}: ${r.dailyDepartures} daily departures (${r.flowShare}%)`"
+        :title="`${r.name}: ${r.dailyDepartures} daily departures (${r.flowShare}%) &bull; ${r.totalFlow} distinct buses`"
       >
-        <span v-if="r.flowShare > 8" class="segment-label">{{ r.name.split(' ')[0] }} ({{ r.flowShare }}%)</span>
+        <span v-if="r.flowShare > 5" class="segment-label">{{ r.name.split(' ')[0] }} ({{ r.flowShare }}%)</span>
       </div>
     </div>
 
@@ -66,19 +66,19 @@ function selectRegion(regionKey: string) {
 
         <div class="stats-row">
           <div class="stat-item">
-            <span class="stat-label">Daily Departures</span>
+            <span class="stat-label">Origin Departures</span>
             <span class="stat-val">{{ r.dailyDepartures.toLocaleString() }}</span>
             <span class="stat-unit">buses / day</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">Transit Hubs</span>
-            <span class="stat-val">{{ r.stopsCount }}</span>
-            <span class="stat-unit">stops</span>
+            <span class="stat-label">Buses Operating</span>
+            <span class="stat-val">{{ r.totalFlow.toLocaleString() }}</span>
+            <span class="stat-unit">distinct buses</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">State Flow Share</span>
+            <span class="stat-label">Schedule Share</span>
             <span class="stat-val" :style="{ color: r.color }">{{ r.flowShare }}%</span>
-            <span class="stat-unit">of total</span>
+            <span class="stat-unit">of state total</span>
           </div>
         </div>
 

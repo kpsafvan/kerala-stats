@@ -5,9 +5,12 @@ import type { DistrictMetric } from '@/types/transit';
 
 const store = useTransitStore();
 
-type SortKey = 'total_flow' | 'daily_departures' | 'daily_arrivals' | 'stops_count' | 'district';
+type SortKey = 'total_flow' | 'daily_departures' | 'daily_arrivals' | 'enroute_transit' | 'stops_count' | 'district' | 'state_share';
+type TerritoryScope = 'kerala' | 'all' | 'interstate';
+
 const sortField = ref<SortKey>('total_flow');
 const sortOrder = ref<'asc' | 'desc'>('desc');
+const territoryScope = ref<TerritoryScope>('kerala');
 
 function toggleSort(field: SortKey) {
   if (sortField.value === field) {
@@ -19,10 +22,15 @@ function toggleSort(field: SortKey) {
 }
 
 const sortedDistricts = computed(() => {
-  const list = [...store.filteredDistricts];
-  list.sort((a: DistrictMetric, b: DistrictMetric) => {
-    let aVal = a[sortField.value];
-    let bVal = b[sortField.value];
+  const filtered = store.filteredDistricts.filter(d => {
+    if (territoryScope.value === 'kerala') return d.state === 'Kerala';
+    if (territoryScope.value === 'interstate') return d.state !== 'Kerala';
+    return true;
+  });
+
+  filtered.sort((a: DistrictMetric, b: DistrictMetric) => {
+    let aVal = a[sortField.value] ?? 0;
+    let bVal = b[sortField.value] ?? 0;
 
     if (typeof aVal === 'string') {
       return sortOrder.value === 'asc'
@@ -34,7 +42,7 @@ const sortedDistricts = computed(() => {
       ? (aVal as number) - (bVal as number)
       : (bVal as number) - (aVal as number);
   });
-  return list;
+  return filtered;
 });
 
 function getRegionBadgeClass(region: string): string {
@@ -51,10 +59,39 @@ function getRegionBadgeClass(region: string): string {
       <div>
         <h2 class="section-heading">District Mobility Dynamics</h2>
         <p class="section-desc">
-          Total scheduled bus flow, departures, arrivals, and primary transit hubs across all 14 administrative districts of Kerala and connected South Indian state districts.
+          Distinct daily bus volume, scheduled departures, arrivals, and primary transit hubs across all 14 administrative districts of Kerala and connected South Indian state corridors.
         </p>
       </div>
       <div class="controls-toolbar">
+        <!-- Territory Scope Filter -->
+        <div class="mode-toggle-pill">
+          <span class="mode-label">Scope:</span>
+          <div class="mode-btns">
+            <button
+              type="button"
+              :class="['mode-chip', { active: territoryScope === 'kerala' }]"
+              @click="territoryScope = 'kerala'"
+            >
+              🌴 Kerala (14)
+            </button>
+            <button
+              type="button"
+              :class="['mode-chip', { active: territoryScope === 'interstate' }]"
+              @click="territoryScope = 'interstate'"
+            >
+              🗺️ Inter-State (19)
+            </button>
+            <button
+              type="button"
+              :class="['mode-chip', { active: territoryScope === 'all' }]"
+              @click="territoryScope = 'all'"
+            >
+              All (33)
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Mode Filter -->
         <div class="mode-toggle-pill">
           <span class="mode-label">Mode:</span>
           <div class="mode-btns">
@@ -81,9 +118,10 @@ function getRegionBadgeClass(region: string): string {
           <span class="sort-label">Sorted by:</span>
           <button
             v-for="opt in [
-              { key: 'total_flow', label: 'Total Flow' },
+              { key: 'total_flow', label: 'Buses Operating' },
               { key: 'daily_departures', label: 'Departures' },
               { key: 'daily_arrivals', label: 'Arrivals' },
+              { key: 'enroute_transit', label: 'En-Route' },
               { key: 'stops_count', label: 'Stops' }
             ]"
             :key="opt.key"
@@ -113,16 +151,24 @@ function getRegionBadgeClass(region: string): string {
                 <span v-if="sortField === 'stops_count'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th @click="toggleSort('daily_departures')" class="text-right">
-                {{ store.hubMetricMode === 'terminal' ? 'Origin Departures' : 'Outbound Departures' }}
+                {{ store.hubMetricMode === 'terminal' ? 'Origin Dep' : 'Outbound Dep' }}
                 <span v-if="sortField === 'daily_departures'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th @click="toggleSort('daily_arrivals')" class="text-right">
-                {{ store.hubMetricMode === 'terminal' ? 'Terminating Arrivals' : 'Inbound Arrivals' }}
+                {{ store.hubMetricMode === 'terminal' ? 'Dest Arr' : 'Inbound Arr' }}
                 <span v-if="sortField === 'daily_arrivals'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
+              <th @click="toggleSort('enroute_transit')" class="text-right">
+                En-Route Transit
+                <span v-if="sortField === 'enroute_transit'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+              </th>
               <th @click="toggleSort('total_flow')" class="text-right">
-                {{ store.hubMetricMode === 'terminal' ? 'Physical Daily Flow' : 'Total Movements' }}
+                {{ store.hubMetricMode === 'terminal' ? 'Buses Operating' : 'Total Movements' }}
                 <span v-if="sortField === 'total_flow'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
+              </th>
+              <th @click="toggleSort('state_share')" class="text-right">
+                State Share
+                <span v-if="sortField === 'state_share'">{{ sortOrder === 'asc' ? '↑' : '↓' }}</span>
               </th>
               <th>Top Transit Hubs</th>
             </tr>
@@ -151,8 +197,15 @@ function getRegionBadgeClass(region: string): string {
               <td class="text-right number-cell arrivals-col">
                 {{ (store.hubMetricMode === 'terminal' ? d.daily_arrivals : (d.total_movement_flow ? Math.round(d.total_movement_flow / 2) : d.daily_arrivals)).toLocaleString() }}
               </td>
+              <td class="text-right number-cell transit-col">
+                {{ (d.enroute_transit || 0).toLocaleString() }}
+              </td>
               <td class="text-right number-cell flow-col">
-                <strong>{{ (store.hubMetricMode === 'terminal' ? d.total_flow : (d.total_movement_flow ?? d.total_flow)).toLocaleString() }}</strong>
+                <strong>{{ (store.hubMetricMode === 'terminal' ? (d.distinct_daily_buses ?? d.total_flow) : (d.total_movement_flow ?? d.total_flow)).toLocaleString() }}</strong>
+              </td>
+              <td class="text-right number-cell share-col">
+                <span v-if="d.state_share" class="share-badge">{{ d.state_share }}%</span>
+                <span v-else>-</span>
               </td>
               <td>
                 <div class="hub-pills">
@@ -422,5 +475,25 @@ function getRegionBadgeClass(region: string): string {
   border-radius: 4px;
   border: 1px solid #e2e8f0;
   white-space: nowrap;
+}
+
+.transit-col {
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.share-col {
+  font-weight: 700;
+}
+
+.share-badge {
+  display: inline-block;
+  padding: 0.15rem 0.45rem;
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
 }
 </style>

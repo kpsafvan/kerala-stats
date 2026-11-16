@@ -60,8 +60,12 @@ export interface DistrictMetric {
   daily_arrivals: number;
   origin_departures?: number;
   dest_arrivals?: number;
+  enroute_transit?: number;
+  distinct_daily_buses?: number;
   total_flow: number;
   total_movement_flow?: number;
+  total_stop_calls?: number;
+  state_share?: number;
   top_hubs: HubFlow[];
 }
 
@@ -70,7 +74,13 @@ export interface RegionalMetric {
   districts: string[];
   stops_count: number;
   daily_departures: number;
+  daily_arrivals?: number;
+  distinct_buses?: number;
+  total_flow?: number;
+  total_stop_calls?: number;
   routes_count: number;
+  departure_share?: number;
+  traffic_share?: number;
 }
 
 export interface ServiceDistributionItem {
@@ -91,6 +101,7 @@ export interface TransitSummary {
   total_stops_vertices: number;
   total_corridors_edges: number;
   total_daily_network_volume: number;
+  total_scheduled_departures?: number;
 }
 
 export interface TransitMetadata {

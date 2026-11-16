@@ -2,7 +2,7 @@
   "metadata": {
     "title": "KSRTC Kerala Transit & Route Analytics (High-Resolution Road Network)",
     "source": "onlineksrtcswift.com & ksrtcedp.com",
-    "generated_at": "2026-11-16T19:28:35.080Z",
+    "generated_at": "2026-11-16T20:01:32.590Z",
     "coverage_note": "Dataset traces consecutive intermediate stops and real highway road polylines strictly restricted to South Indian states (Kerala, Tamil Nadu, Karnataka)."
   },
   "summary": {
@@ -10,7 +10,8 @@
     "total_trips_sampled": 2741,
     "total_stops_vertices": 197,
     "total_corridors_edges": 430,
-    "total_daily_network_volume": 23628
+    "total_daily_network_volume": 23628,
+    "total_scheduled_departures": 1215
   },
   "regions": {
     "North Kerala": {
@@ -25,8 +26,11 @@
       ],
       "stops_count": 55,
       "daily_departures": 339,
-      "total_flow": 5458,
-      "routes_count": 0
+      "daily_arrivals": 249,
+      "distinct_buses": 762,
+      "total_stop_calls": 5458,
+      "routes_count": 0,
+      "departure_share": 27.9
     },
     "Central Kerala": {
       "name": "Central Kerala",
@@ -39,8 +43,11 @@
       ],
       "stops_count": 71,
       "daily_departures": 346,
-      "total_flow": 10321,
-      "routes_count": 0
+      "daily_arrivals": 245,
+      "distinct_buses": 1112,
+      "total_stop_calls": 10321,
+      "routes_count": 0,
+      "departure_share": 28.5
     },
     "South Kerala": {
       "name": "South Kerala (Travancore)",
@@ -51,8 +58,11 @@
       ],
       "stops_count": 43,
       "daily_departures": 371,
-      "total_flow": 8399,
-      "routes_count": 0
+      "daily_arrivals": 593,
+      "distinct_buses": 955,
+      "total_stop_calls": 8399,
+      "routes_count": 0,
+      "departure_share": 30.5
     },
     "Inter-State": {
       "name": "South Indian Inter-State Hubs (TN, KA)",
@@ -79,110 +89,145 @@
       ],
       "stops_count": 28,
       "daily_departures": 159,
-      "total_flow": 630,
-      "routes_count": 0
+      "daily_arrivals": 128,
+      "distinct_buses": 287,
+      "total_stop_calls": 630,
+      "routes_count": 0,
+      "departure_share": 13.1
     }
   },
   "districts": [
     {
-      "district": "Thrissur",
+      "district": "Ernakulam",
       "state": "Kerala",
       "region": "Central Kerala",
       "stops": [
-        "Guruvayoor",
-        "Kodungallur",
-        "Irinjalakuda",
-        "Thrissur",
-        "Mannuthy",
-        "Wadakkanchery",
-        "Kunnamkulam",
-        "Mala",
-        "Thiruvilvamala",
-        "Pengamukku",
-        "Chalakudy",
-        "Koratty"
+        "Tripunithura",
+        "Ernakulam",
+        "North Paravur",
+        "Perumbavoor",
+        "Koothattukulam",
+        "Muvattupuzha",
+        "Kothamangalam",
+        "Piravom",
+        "Angamaly",
+        "Aluva",
+        "Edappally",
+        "Kumbalam",
+        "Athani",
+        "Nedumbassery"
       ],
-      "stops_count": 12,
-      "daily_departures": 83,
-      "daily_arrivals": 67,
-      "origin_departures": 83,
-      "dest_arrivals": 67,
-      "total_flow": 3256,
-      "total_movement_flow": 6362,
+      "stops_count": 14,
+      "daily_departures": 138,
+      "daily_arrivals": 125,
+      "origin_departures": 138,
+      "dest_arrivals": 125,
+      "enroute_transit": 745,
+      "distinct_daily_buses": 1008,
+      "total_flow": 1008,
+      "total_stop_calls": 2791,
       "top_hubs": [
         {
-          "stop": "Kunnamkulam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 476
+          "stop": "Ernakulam",
+          "departures": 108,
+          "arrivals": 109,
+          "total": 217
         },
         {
-          "stop": "Mannuthy",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 187
+          "stop": "Aluva",
+          "departures": 10,
+          "arrivals": 7,
+          "total": 17
         },
         {
-          "stop": "Thrissur",
-          "departures": 45,
-          "arrivals": 38,
-          "total": 83
-        },
-        {
-          "stop": "Wadakkanchery",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 68
-        },
-        {
-          "stop": "Guruvayoor",
-          "departures": 26,
-          "arrivals": 15,
-          "total": 41
-        },
-        {
-          "stop": "Mala",
-          "departures": 2,
+          "stop": "North Paravur",
+          "departures": 4,
           "arrivals": 4,
-          "total": 6
+          "total": 8
         },
         {
-          "stop": "Thiruvilvamala",
+          "stop": "Perumbavoor",
           "departures": 3,
           "arrivals": 3,
           "total": 6
         },
         {
-          "stop": "Pengamukku",
-          "departures": 3,
-          "arrivals": 3,
-          "total": 6
+          "stop": "Kothamangalam",
+          "departures": 5,
+          "arrivals": 0,
+          "total": 5
+        }
+      ],
+      "total_movement_flow": 1753,
+      "state_share": 100
+    },
+    {
+      "district": "Alappuzha",
+      "state": "Kerala",
+      "region": "Central Kerala",
+      "stops": [
+        "Chengannur",
+        "Kayamkulam",
+        "Haripad",
+        "Ambalapuzha",
+        "Alappuzha",
+        "Cherthala",
+        "Aroor",
+        "Moncompu",
+        "Mavelikara",
+        "Kalavoor",
+        "Arthunkal",
+        "Arookutty",
+        "Thottappally",
+        "Eramalloor",
+        "Mankamkuzhy",
+        "Poochakkal",
+        "Thrikkunnapuzha",
+        "Pulikkunnu"
+      ],
+      "stops_count": 18,
+      "daily_departures": 29,
+      "daily_arrivals": 20,
+      "origin_departures": 29,
+      "dest_arrivals": 20,
+      "enroute_transit": 895,
+      "distinct_daily_buses": 942,
+      "total_flow": 942,
+      "total_stop_calls": 1622,
+      "top_hubs": [
+        {
+          "stop": "Alappuzha",
+          "departures": 16,
+          "arrivals": 14,
+          "total": 30
         },
         {
-          "stop": "Irinjalakuda",
+          "stop": "Cherthala",
+          "departures": 6,
+          "arrivals": 3,
+          "total": 9
+        },
+        {
+          "stop": "Haripad",
           "departures": 2,
           "arrivals": 2,
           "total": 4
         },
         {
-          "stop": "Kodungallur",
-          "departures": 0,
-          "arrivals": 2,
-          "total": 2
+          "stop": "Kayamkulam",
+          "departures": 2,
+          "arrivals": 1,
+          "total": 3
         },
         {
-          "stop": "Chalakudy",
+          "stop": "Chengannur",
           "departures": 2,
           "arrivals": 0,
           "total": 2
-        },
-        {
-          "stop": "Koratty",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
         }
-      ]
+      ],
+      "total_movement_flow": 1839,
+      "state_share": 93.5
     },
     {
       "district": "Kollam",
@@ -209,51 +254,11 @@
       "daily_arrivals": 17,
       "origin_departures": 20,
       "dest_arrivals": 17,
-      "total_flow": 3035,
-      "total_movement_flow": 6033,
+      "enroute_transit": 877,
+      "distinct_daily_buses": 914,
+      "total_flow": 914,
+      "total_stop_calls": 3035,
       "top_hubs": [
-        {
-          "stop": "Ayoor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 772
-        },
-        {
-          "stop": "Valakom",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 772
-        },
-        {
-          "stop": "Parippally",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 134
-        },
-        {
-          "stop": "Chathannoor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 134
-        },
-        {
-          "stop": "Chavara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 117
-        },
-        {
-          "stop": "Karunagapally",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 114
-        },
-        {
-          "stop": "Aryankavu",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 25
-        },
         {
           "stop": "Kollam",
           "departures": 15,
@@ -264,12 +269,6 @@
           "stop": "Kottarakkara",
           "departures": 2,
           "arrivals": 4,
-          "total": 6
-        },
-        {
-          "stop": "Sasthamcotta",
-          "departures": 0,
-          "arrivals": 0,
           "total": 6
         },
         {
@@ -289,14 +288,10 @@
           "departures": 1,
           "arrivals": 1,
           "total": 2
-        },
-        {
-          "stop": "Madathara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
         }
-      ]
+      ],
+      "total_movement_flow": 1791,
+      "state_share": 90.7
     },
     {
       "district": "Thiruvananthapuram",
@@ -331,32 +326,16 @@
       "daily_arrivals": 555,
       "origin_departures": 327,
       "dest_arrivals": 555,
-      "total_flow": 2924,
-      "total_movement_flow": 4966,
+      "enroute_transit": 20,
+      "distinct_daily_buses": 896,
+      "total_flow": 896,
+      "total_stop_calls": 2924,
       "top_hubs": [
         {
           "stop": "Thiruvananthapuram",
           "departures": 290,
           "arrivals": 483,
           "total": 773
-        },
-        {
-          "stop": "Venjaramoodu",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 770
-        },
-        {
-          "stop": "Kilimanoor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 770
-        },
-        {
-          "stop": "Kazhakuttam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 126
         },
         {
           "stop": "Neyyattinkara",
@@ -381,206 +360,72 @@
           "departures": 1,
           "arrivals": 13,
           "total": 14
-        },
-        {
-          "stop": "Vizhinjam",
-          "departures": 3,
-          "arrivals": 5,
-          "total": 8
-        },
-        {
-          "stop": "Mangalapuram",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 6
-        },
-        {
-          "stop": "Attingal",
-          "departures": 2,
-          "arrivals": 3,
-          "total": 5
-        },
-        {
-          "stop": "Aryanad",
-          "departures": 1,
-          "arrivals": 3,
-          "total": 4
-        },
-        {
-          "stop": "Vithura",
-          "departures": 1,
-          "arrivals": 2,
-          "total": 3
-        },
-        {
-          "stop": "Kaniyapuram",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Vellarada",
-          "departures": 0,
-          "arrivals": 2,
-          "total": 2
-        },
-        {
-          "stop": "Aruvippuram",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Palode",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Kallambalam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Neyyar Dam",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Ayirooppara",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Varkala",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Nemom",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 922,
+      "state_share": 88.9
     },
     {
-      "district": "Ernakulam",
+      "district": "Thrissur",
       "state": "Kerala",
       "region": "Central Kerala",
       "stops": [
-        "Tripunithura",
-        "Ernakulam",
-        "North Paravur",
-        "Perumbavoor",
-        "Koothattukulam",
-        "Muvattupuzha",
-        "Kothamangalam",
-        "Piravom",
-        "Angamaly",
-        "Aluva",
-        "Edappally",
-        "Kumbalam",
-        "Athani",
-        "Nedumbassery"
+        "Guruvayoor",
+        "Kodungallur",
+        "Irinjalakuda",
+        "Thrissur",
+        "Mannuthy",
+        "Wadakkanchery",
+        "Kunnamkulam",
+        "Mala",
+        "Thiruvilvamala",
+        "Pengamukku",
+        "Chalakudy",
+        "Koratty"
       ],
-      "stops_count": 14,
-      "daily_departures": 138,
-      "daily_arrivals": 125,
-      "origin_departures": 138,
-      "dest_arrivals": 125,
-      "total_flow": 2791,
-      "total_movement_flow": 5319,
+      "stops_count": 12,
+      "daily_departures": 83,
+      "daily_arrivals": 67,
+      "origin_departures": 83,
+      "dest_arrivals": 67,
+      "enroute_transit": 698,
+      "distinct_daily_buses": 848,
+      "total_flow": 848,
+      "total_stop_calls": 3256,
       "top_hubs": [
         {
-          "stop": "Tripunithura",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 664
+          "stop": "Thrissur",
+          "departures": 45,
+          "arrivals": 38,
+          "total": 83
         },
         {
-          "stop": "Ernakulam",
-          "departures": 108,
-          "arrivals": 109,
-          "total": 217
+          "stop": "Guruvayoor",
+          "departures": 26,
+          "arrivals": 15,
+          "total": 41
         },
         {
-          "stop": "Edappally",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 35
-        },
-        {
-          "stop": "Aluva",
-          "departures": 10,
-          "arrivals": 7,
-          "total": 17
-        },
-        {
-          "stop": "North Paravur",
-          "departures": 4,
+          "stop": "Mala",
+          "departures": 2,
           "arrivals": 4,
-          "total": 8
+          "total": 6
         },
         {
-          "stop": "Perumbavoor",
+          "stop": "Thiruvilvamala",
           "departures": 3,
           "arrivals": 3,
           "total": 6
         },
         {
-          "stop": "Kothamangalam",
-          "departures": 5,
-          "arrivals": 0,
-          "total": 5
-        },
-        {
-          "stop": "Piravom",
+          "stop": "Pengamukku",
           "departures": 3,
-          "arrivals": 2,
-          "total": 5
-        },
-        {
-          "stop": "Kumbalam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 4
-        },
-        {
-          "stop": "Muvattupuzha",
-          "departures": 2,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Angamaly",
-          "departures": 2,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Koothattukulam",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Athani",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Nedumbassery",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
+          "arrivals": 3,
+          "total": 6
         }
-      ]
+      ],
+      "total_movement_flow": 1546,
+      "state_share": 84.1
     },
     {
       "district": "Kottayam",
@@ -606,32 +451,16 @@
       "daily_arrivals": 15,
       "origin_departures": 53,
       "dest_arrivals": 15,
-      "total_flow": 2450,
-      "total_movement_flow": 4832,
+      "enroute_transit": 759,
+      "distinct_daily_buses": 826,
+      "total_flow": 826,
+      "total_stop_calls": 2450,
       "top_hubs": [
-        {
-          "stop": "Ettumanoor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 72
-        },
         {
           "stop": "Kottayam",
           "departures": 33,
           "arrivals": 4,
           "total": 37
-        },
-        {
-          "stop": "Kanjirappally",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 34
-        },
-        {
-          "stop": "Mundakkayam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 29
         },
         {
           "stop": "Pala",
@@ -652,42 +481,14 @@
           "total": 4
         },
         {
-          "stop": "Chingavanam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 4
-        },
-        {
           "stop": "Vaikom",
           "departures": 1,
           "arrivals": 1,
           "total": 2
-        },
-        {
-          "stop": "Erumeli",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Ponkunnam",
-          "departures": 0,
-          "arrivals": 1,
-          "total": 1
-        },
-        {
-          "stop": "Chennad",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Kaipally",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 1586,
+      "state_share": 81.9
     },
     {
       "district": "Pathanamthitta",
@@ -707,26 +508,16 @@
       "daily_arrivals": 21,
       "origin_departures": 24,
       "dest_arrivals": 21,
-      "total_flow": 2440,
-      "total_movement_flow": 4835,
+      "enroute_transit": 761,
+      "distinct_daily_buses": 806,
+      "total_flow": 806,
+      "total_stop_calls": 2440,
       "top_hubs": [
-        {
-          "stop": "Pandalam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 780
-        },
         {
           "stop": "Adoor",
           "departures": 14,
           "arrivals": 13,
           "total": 27
-        },
-        {
-          "stop": "Ranni",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 21
         },
         {
           "stop": "Pathanamthitta",
@@ -752,7 +543,9 @@
           "arrivals": 0,
           "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 1567,
+      "state_share": 80
     },
     {
       "district": "Malappuram",
@@ -777,39 +570,11 @@
       "daily_arrivals": 23,
       "origin_departures": 31,
       "dest_arrivals": 23,
-      "total_flow": 2056,
-      "total_movement_flow": 4058,
+      "enroute_transit": 486,
+      "distinct_daily_buses": 540,
+      "total_flow": 540,
+      "total_stop_calls": 2056,
       "top_hubs": [
-        {
-          "stop": "Edappal",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 459
-        },
-        {
-          "stop": "Kuttippuram",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 459
-        },
-        {
-          "stop": "Changaramkulam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 458
-        },
-        {
-          "stop": "Tirur",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 458
-        },
-        {
-          "stop": "Manjeri",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 31
-        },
         {
           "stop": "Malappuram",
           "departures": 8,
@@ -839,162 +604,10 @@
           "departures": 4,
           "arrivals": 2,
           "total": 6
-        },
-        {
-          "stop": "Valanchery",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Kottakkal",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
-    },
-    {
-      "district": "Alappuzha",
-      "state": "Kerala",
-      "region": "Central Kerala",
-      "stops": [
-        "Chengannur",
-        "Kayamkulam",
-        "Haripad",
-        "Ambalapuzha",
-        "Alappuzha",
-        "Cherthala",
-        "Aroor",
-        "Moncompu",
-        "Mavelikara",
-        "Kalavoor",
-        "Arthunkal",
-        "Arookutty",
-        "Thottappally",
-        "Eramalloor",
-        "Mankamkuzhy",
-        "Poochakkal",
-        "Thrikkunnapuzha",
-        "Pulikkunnu"
       ],
-      "stops_count": 18,
-      "daily_departures": 29,
-      "daily_arrivals": 20,
-      "origin_departures": 29,
-      "dest_arrivals": 20,
-      "total_flow": 1622,
-      "total_movement_flow": 3195,
-      "top_hubs": [
-        {
-          "stop": "Aroor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 150
-        },
-        {
-          "stop": "Ambalapuzha",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 108
-        },
-        {
-          "stop": "Alappuzha",
-          "departures": 16,
-          "arrivals": 14,
-          "total": 30
-        },
-        {
-          "stop": "Moncompu",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 18
-        },
-        {
-          "stop": "Cherthala",
-          "departures": 6,
-          "arrivals": 3,
-          "total": 9
-        },
-        {
-          "stop": "Mavelikara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 6
-        },
-        {
-          "stop": "Haripad",
-          "departures": 2,
-          "arrivals": 2,
-          "total": 4
-        },
-        {
-          "stop": "Kayamkulam",
-          "departures": 2,
-          "arrivals": 1,
-          "total": 3
-        },
-        {
-          "stop": "Thottappally",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 3
-        },
-        {
-          "stop": "Chengannur",
-          "departures": 2,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Kalavoor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Arthunkal",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Arookutty",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Eramalloor",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Mankamkuzhy",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Poochakkal",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Thrikkunnapuzha",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Pulikkunnu",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
-        }
-      ]
+      "total_movement_flow": 1026,
+      "state_share": 53.6
     },
     {
       "district": "Kozhikode",
@@ -1016,32 +629,16 @@
       "daily_arrivals": 101,
       "origin_departures": 116,
       "dest_arrivals": 101,
-      "total_flow": 1491,
-      "total_movement_flow": 2765,
+      "enroute_transit": 297,
+      "distinct_daily_buses": 514,
+      "total_flow": 514,
+      "total_stop_calls": 1491,
       "top_hubs": [
-        {
-          "stop": "Ramanattukara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 485
-        },
         {
           "stop": "Kozhikode",
           "departures": 111,
           "arrivals": 96,
           "total": 207
-        },
-        {
-          "stop": "Vadakara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 138
-        },
-        {
-          "stop": "Koyilandy",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 133
         },
         {
           "stop": "Thottilpalam",
@@ -1066,14 +663,10 @@
           "departures": 0,
           "arrivals": 1,
           "total": 1
-        },
-        {
-          "stop": "Kodenchery",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 811,
+      "state_share": 51
     },
     {
       "district": "Palakkad",
@@ -1099,21 +692,11 @@
       "daily_arrivals": 46,
       "origin_departures": 70,
       "dest_arrivals": 46,
-      "total_flow": 834,
-      "total_movement_flow": 1552,
+      "enroute_transit": 134,
+      "distinct_daily_buses": 250,
+      "total_flow": 250,
+      "total_stop_calls": 834,
       "top_hubs": [
-        {
-          "stop": "Vadakkencherry",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 187
-        },
-        {
-          "stop": "Alathur",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 187
-        },
         {
           "stop": "Palakkad",
           "departures": 54,
@@ -1121,34 +704,10 @@
           "total": 82
         },
         {
-          "stop": "Walayar",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 71
-        },
-        {
-          "stop": "Shoranur",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 62
-        },
-        {
-          "stop": "Pattambi",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 58
-        },
-        {
           "stop": "Chittur",
           "departures": 9,
           "arrivals": 13,
           "total": 22
-        },
-        {
-          "stop": "Kozhinjampara",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 16
         },
         {
           "stop": "Mannarkkad",
@@ -1167,20 +726,10 @@
           "departures": 1,
           "arrivals": 1,
           "total": 2
-        },
-        {
-          "stop": "Gopalapuram",
-          "departures": 0,
-          "arrivals": 1,
-          "total": 1
-        },
-        {
-          "stop": "Cherpulassery",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 384,
+      "state_share": 24.8
     },
     {
       "district": "Wayanad",
@@ -1198,15 +747,11 @@
       "daily_arrivals": 32,
       "origin_departures": 53,
       "dest_arrivals": 32,
-      "total_flow": 615,
-      "total_movement_flow": 1145,
+      "enroute_transit": 121,
+      "distinct_daily_buses": 206,
+      "total_flow": 206,
+      "total_stop_calls": 615,
       "top_hubs": [
-        {
-          "stop": "Vythiri",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 202
-        },
         {
           "stop": "Sulthan Bathery",
           "departures": 35,
@@ -1230,8 +775,16 @@
           "departures": 1,
           "arrivals": 0,
           "total": 1
+        },
+        {
+          "stop": "Vythiri",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 202
         }
-      ]
+      ],
+      "total_movement_flow": 327,
+      "state_share": 20.4
     },
     {
       "district": "Kannur",
@@ -1255,8 +808,10 @@
       "daily_arrivals": 39,
       "origin_departures": 58,
       "dest_arrivals": 39,
-      "total_flow": 348,
-      "total_movement_flow": 599,
+      "enroute_transit": 32,
+      "distinct_daily_buses": 129,
+      "total_flow": 129,
+      "total_stop_calls": 348,
       "top_hubs": [
         {
           "stop": "Kannur",
@@ -1271,34 +826,10 @@
           "total": 12
         },
         {
-          "stop": "Taliparamba",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 9
-        },
-        {
           "stop": "Payyanur",
           "departures": 4,
           "arrivals": 3,
           "total": 7
-        },
-        {
-          "stop": "Koothuparamba",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 7
-        },
-        {
-          "stop": "Iritty",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 5
-        },
-        {
-          "stop": "Udayagiri",
-          "departures": 2,
-          "arrivals": 1,
-          "total": 3
         },
         {
           "stop": "Parassinikadavu",
@@ -1307,24 +838,129 @@
           "total": 3
         },
         {
-          "stop": "Chandanakampara",
-          "departures": 1,
+          "stop": "Udayagiri",
+          "departures": 2,
           "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Vengad",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Keezhpally",
-          "departures": 0,
-          "arrivals": 1,
-          "total": 1
+          "total": 3
         }
-      ]
+      ],
+      "total_movement_flow": 161,
+      "state_share": 12.8
+    },
+    {
+      "district": "Mysuru (KA)",
+      "state": "Karnataka",
+      "region": "Inter-State",
+      "stops": [
+        "Mysuru"
+      ],
+      "stops_count": 1,
+      "daily_departures": 6,
+      "daily_arrivals": 7,
+      "origin_departures": 6,
+      "dest_arrivals": 7,
+      "enroute_transit": 106,
+      "distinct_daily_buses": 119,
+      "total_flow": 119,
+      "total_stop_calls": 119,
+      "top_hubs": [
+        {
+          "stop": "Mysuru",
+          "departures": 6,
+          "arrivals": 7,
+          "total": 13
+        }
+      ],
+      "total_movement_flow": 225,
+      "state_share": 11.8
+    },
+    {
+      "district": "Chamarajanagar (KA)",
+      "state": "Karnataka",
+      "region": "Inter-State",
+      "stops": [
+        "Gundlupet"
+      ],
+      "stops_count": 1,
+      "daily_departures": 0,
+      "daily_arrivals": 0,
+      "origin_departures": 0,
+      "dest_arrivals": 0,
+      "enroute_transit": 115,
+      "distinct_daily_buses": 115,
+      "total_flow": 115,
+      "total_stop_calls": 115,
+      "top_hubs": [
+        {
+          "stop": "Gundlupet",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 115
+        }
+      ],
+      "total_movement_flow": 230,
+      "state_share": 11.4
+    },
+    {
+      "district": "Bengaluru Urban (KA)",
+      "state": "Karnataka",
+      "region": "Inter-State",
+      "stops": [
+        "Bengaluru"
+      ],
+      "stops_count": 1,
+      "daily_departures": 65,
+      "daily_arrivals": 47,
+      "origin_departures": 65,
+      "dest_arrivals": 47,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 112,
+      "total_flow": 112,
+      "total_stop_calls": 112,
+      "top_hubs": [
+        {
+          "stop": "Bengaluru",
+          "departures": 65,
+          "arrivals": 47,
+          "total": 112
+        }
+      ],
+      "total_movement_flow": 112,
+      "state_share": 11.1
+    },
+    {
+      "district": "Coimbatore (TN)",
+      "state": "Tamil Nadu",
+      "region": "Inter-State",
+      "stops": [
+        "Coimbatore",
+        "Pollachi"
+      ],
+      "stops_count": 2,
+      "daily_departures": 37,
+      "daily_arrivals": 29,
+      "origin_departures": 37,
+      "dest_arrivals": 29,
+      "enroute_transit": 20,
+      "distinct_daily_buses": 86,
+      "total_flow": 86,
+      "total_stop_calls": 86,
+      "top_hubs": [
+        {
+          "stop": "Coimbatore",
+          "departures": 34,
+          "arrivals": 26,
+          "total": 60
+        },
+        {
+          "stop": "Pollachi",
+          "departures": 3,
+          "arrivals": 3,
+          "total": 6
+        }
+      ],
+      "total_movement_flow": 106,
+      "state_share": 8.5
     },
     {
       "district": "Idukki",
@@ -1351,25 +987,15 @@
       "daily_arrivals": 18,
       "origin_departures": 43,
       "dest_arrivals": 18,
-      "total_flow": 202,
-      "total_movement_flow": 343,
+      "enroute_transit": 24,
+      "distinct_daily_buses": 85,
+      "total_flow": 85,
+      "total_stop_calls": 202,
       "top_hubs": [
-        {
-          "stop": "Adimali",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 31
-        },
         {
           "stop": "Munnar",
           "departures": 14,
           "arrivals": 14,
-          "total": 28
-        },
-        {
-          "stop": "Peermade",
-          "departures": 0,
-          "arrivals": 0,
           "total": 28
         },
         {
@@ -1391,100 +1017,14 @@
           "total": 7
         },
         {
-          "stop": "Kulamavu",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 5
-        },
-        {
           "stop": "Kumily",
           "departures": 2,
           "arrivals": 1,
           "total": 3
-        },
-        {
-          "stop": "Vandiperiyar",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 3
-        },
-        {
-          "stop": "Moolamattom",
-          "departures": 2,
-          "arrivals": 0,
-          "total": 2
-        },
-        {
-          "stop": "Mattupetty",
-          "departures": 1,
-          "arrivals": 1,
-          "total": 2
-        },
-        {
-          "stop": "Chempakappara",
-          "departures": 0,
-          "arrivals": 1,
-          "total": 1
-        },
-        {
-          "stop": "Pooppara",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
-        },
-        {
-          "stop": "Kanthalloor",
-          "departures": 1,
-          "arrivals": 0,
-          "total": 1
         }
-      ]
-    },
-    {
-      "district": "Mysuru (KA)",
-      "state": "Karnataka",
-      "region": "Inter-State",
-      "stops": [
-        "Mysuru"
       ],
-      "stops_count": 1,
-      "daily_departures": 6,
-      "daily_arrivals": 7,
-      "origin_departures": 6,
-      "dest_arrivals": 7,
-      "total_flow": 119,
-      "total_movement_flow": 225,
-      "top_hubs": [
-        {
-          "stop": "Mysuru",
-          "departures": 6,
-          "arrivals": 7,
-          "total": 13
-        }
-      ]
-    },
-    {
-      "district": "Chamarajanagar (KA)",
-      "state": "Karnataka",
-      "region": "Inter-State",
-      "stops": [
-        "Gundlupet"
-      ],
-      "stops_count": 1,
-      "daily_departures": 0,
-      "daily_arrivals": 0,
-      "origin_departures": 0,
-      "dest_arrivals": 0,
-      "total_flow": 115,
-      "total_movement_flow": 230,
-      "top_hubs": [
-        {
-          "stop": "Gundlupet",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 115
-        }
-      ]
+      "total_movement_flow": 109,
+      "state_share": 8.4
     },
     {
       "district": "Kasaragod",
@@ -1502,15 +1042,11 @@
       "daily_arrivals": 8,
       "origin_departures": 11,
       "dest_arrivals": 8,
-      "total_flow": 114,
-      "total_movement_flow": 209,
+      "enroute_transit": 20,
+      "distinct_daily_buses": 39,
+      "total_flow": 39,
+      "total_stop_calls": 114,
       "top_hubs": [
-        {
-          "stop": "Nileshwar",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 39
-        },
         {
           "stop": "Kasaragod",
           "departures": 4,
@@ -1534,61 +1070,16 @@
           "departures": 2,
           "arrivals": 1,
           "total": 3
-        }
-      ]
-    },
-    {
-      "district": "Bengaluru Urban (KA)",
-      "state": "Karnataka",
-      "region": "Inter-State",
-      "stops": [
-        "Bengaluru"
-      ],
-      "stops_count": 1,
-      "daily_departures": 65,
-      "daily_arrivals": 47,
-      "origin_departures": 65,
-      "dest_arrivals": 47,
-      "total_flow": 112,
-      "total_movement_flow": 112,
-      "top_hubs": [
-        {
-          "stop": "Bengaluru",
-          "departures": 65,
-          "arrivals": 47,
-          "total": 112
-        }
-      ]
-    },
-    {
-      "district": "Coimbatore (TN)",
-      "state": "Tamil Nadu",
-      "region": "Inter-State",
-      "stops": [
-        "Coimbatore",
-        "Pollachi"
-      ],
-      "stops_count": 2,
-      "daily_departures": 37,
-      "daily_arrivals": 29,
-      "origin_departures": 37,
-      "dest_arrivals": 29,
-      "total_flow": 86,
-      "total_movement_flow": 106,
-      "top_hubs": [
-        {
-          "stop": "Coimbatore",
-          "departures": 34,
-          "arrivals": 26,
-          "total": 60
         },
         {
-          "stop": "Pollachi",
-          "departures": 3,
-          "arrivals": 3,
-          "total": 6
+          "stop": "Nileshwar",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 39
         }
-      ]
+      ],
+      "total_movement_flow": 59,
+      "state_share": 3.9
     },
     {
       "district": "Kanyakumari (TN)",
@@ -1607,15 +1098,11 @@
       "daily_arrivals": 13,
       "origin_departures": 13,
       "dest_arrivals": 13,
-      "total_flow": 57,
-      "total_movement_flow": 88,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 26,
+      "total_flow": 26,
+      "total_stop_calls": 57,
       "top_hubs": [
-        {
-          "stop": "Nagercoil",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 22
-        },
         {
           "stop": "Kanyakumari",
           "departures": 8,
@@ -1629,24 +1116,80 @@
           "total": 7
         },
         {
-          "stop": "Thuckalay",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 3
-        },
-        {
-          "stop": "Marthandam",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 3
-        },
-        {
           "stop": "Thalakkulam",
           "departures": 1,
           "arrivals": 1,
           "total": 2
+        },
+        {
+          "stop": "Nagercoil",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 22
+        },
+        {
+          "stop": "Thuckalay",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 3
         }
-      ]
+      ],
+      "total_movement_flow": 26,
+      "state_share": 2.6
+    },
+    {
+      "district": "Tenkasi (TN)",
+      "state": "Tamil Nadu",
+      "region": "Inter-State",
+      "stops": [
+        "Tenkasi"
+      ],
+      "stops_count": 1,
+      "daily_departures": 12,
+      "daily_arrivals": 12,
+      "origin_departures": 12,
+      "dest_arrivals": 12,
+      "enroute_transit": 1,
+      "distinct_daily_buses": 25,
+      "total_flow": 25,
+      "total_stop_calls": 25,
+      "top_hubs": [
+        {
+          "stop": "Tenkasi",
+          "departures": 12,
+          "arrivals": 12,
+          "total": 24
+        }
+      ],
+      "total_movement_flow": 26,
+      "state_share": 2.5
+    },
+    {
+      "district": "Dakshina Kannada (KA)",
+      "state": "Karnataka",
+      "region": "Inter-State",
+      "stops": [
+        "Mangaluru"
+      ],
+      "stops_count": 1,
+      "daily_departures": 5,
+      "daily_arrivals": 4,
+      "origin_departures": 5,
+      "dest_arrivals": 4,
+      "enroute_transit": 11,
+      "distinct_daily_buses": 20,
+      "total_flow": 20,
+      "total_stop_calls": 20,
+      "top_hubs": [
+        {
+          "stop": "Mangaluru",
+          "departures": 5,
+          "arrivals": 4,
+          "total": 9
+        }
+      ],
+      "total_movement_flow": 31,
+      "state_share": 2
     },
     {
       "district": "Dindigul (TN)",
@@ -1661,45 +1204,26 @@
       "daily_arrivals": 4,
       "origin_departures": 7,
       "dest_arrivals": 4,
-      "total_flow": 30,
-      "total_movement_flow": 49,
+      "enroute_transit": 7,
+      "distinct_daily_buses": 18,
+      "total_flow": 18,
+      "total_stop_calls": 30,
       "top_hubs": [
-        {
-          "stop": "Dindigul",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 14
-        },
         {
           "stop": "Palani",
           "departures": 7,
           "arrivals": 4,
           "total": 11
-        }
-      ]
-    },
-    {
-      "district": "Tenkasi (TN)",
-      "state": "Tamil Nadu",
-      "region": "Inter-State",
-      "stops": [
-        "Tenkasi"
-      ],
-      "stops_count": 1,
-      "daily_departures": 12,
-      "daily_arrivals": 12,
-      "origin_departures": 12,
-      "dest_arrivals": 12,
-      "total_flow": 25,
-      "total_movement_flow": 26,
-      "top_hubs": [
+        },
         {
-          "stop": "Tenkasi",
-          "departures": 12,
-          "arrivals": 12,
-          "total": 24
+          "stop": "Dindigul",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 14
         }
-      ]
+      ],
+      "total_movement_flow": 25,
+      "state_share": 1.8
     },
     {
       "district": "Udupi (KA)",
@@ -1714,8 +1238,10 @@
       "daily_arrivals": 4,
       "origin_departures": 7,
       "dest_arrivals": 4,
-      "total_flow": 22,
-      "total_movement_flow": 33,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 11,
+      "total_flow": 11,
+      "total_stop_calls": 22,
       "top_hubs": [
         {
           "stop": "Kollur",
@@ -1729,30 +1255,36 @@
           "arrivals": 0,
           "total": 11
         }
-      ]
+      ],
+      "total_movement_flow": 11,
+      "state_share": 1.1
     },
     {
-      "district": "Dakshina Kannada (KA)",
-      "state": "Karnataka",
+      "district": "Theni (TN)",
+      "state": "Tamil Nadu",
       "region": "Inter-State",
       "stops": [
-        "Mangaluru"
+        "Theni"
       ],
       "stops_count": 1,
-      "daily_departures": 5,
-      "daily_arrivals": 4,
-      "origin_departures": 5,
-      "dest_arrivals": 4,
-      "total_flow": 20,
-      "total_movement_flow": 31,
+      "daily_departures": 0,
+      "daily_arrivals": 0,
+      "origin_departures": 0,
+      "dest_arrivals": 0,
+      "enroute_transit": 10,
+      "distinct_daily_buses": 10,
+      "total_flow": 10,
+      "total_stop_calls": 10,
       "top_hubs": [
         {
-          "stop": "Mangaluru",
-          "departures": 5,
-          "arrivals": 4,
-          "total": 9
+          "stop": "Theni",
+          "departures": 0,
+          "arrivals": 0,
+          "total": 10
         }
-      ]
+      ],
+      "total_movement_flow": 20,
+      "state_share": 1
     },
     {
       "district": "Nilgiris (TN)",
@@ -1767,8 +1299,10 @@
       "daily_arrivals": 3,
       "origin_departures": 4,
       "dest_arrivals": 3,
-      "total_flow": 11,
-      "total_movement_flow": 15,
+      "enroute_transit": 2,
+      "distinct_daily_buses": 9,
+      "total_flow": 9,
+      "total_stop_calls": 11,
       "top_hubs": [
         {
           "stop": "Ooty",
@@ -1782,30 +1316,9 @@
           "arrivals": 0,
           "total": 4
         }
-      ]
-    },
-    {
-      "district": "Theni (TN)",
-      "state": "Tamil Nadu",
-      "region": "Inter-State",
-      "stops": [
-        "Theni"
       ],
-      "stops_count": 1,
-      "daily_departures": 0,
-      "daily_arrivals": 0,
-      "origin_departures": 0,
-      "dest_arrivals": 0,
-      "total_flow": 10,
-      "total_movement_flow": 20,
-      "top_hubs": [
-        {
-          "stop": "Theni",
-          "departures": 0,
-          "arrivals": 0,
-          "total": 10
-        }
-      ]
+      "total_movement_flow": 11,
+      "state_share": 0.9
     },
     {
       "district": "Salem (TN)",
@@ -1819,8 +1332,10 @@
       "daily_arrivals": 0,
       "origin_departures": 0,
       "dest_arrivals": 0,
+      "enroute_transit": 6,
+      "distinct_daily_buses": 6,
       "total_flow": 6,
-      "total_movement_flow": 12,
+      "total_stop_calls": 6,
       "top_hubs": [
         {
           "stop": "Salem",
@@ -1828,7 +1343,9 @@
           "arrivals": 0,
           "total": 6
         }
-      ]
+      ],
+      "total_movement_flow": 12,
+      "state_share": 0.6
     },
     {
       "district": "Madurai (TN)",
@@ -1842,8 +1359,10 @@
       "daily_arrivals": 2,
       "origin_departures": 2,
       "dest_arrivals": 2,
+      "enroute_transit": 2,
+      "distinct_daily_buses": 6,
       "total_flow": 6,
-      "total_movement_flow": 8,
+      "total_stop_calls": 6,
       "top_hubs": [
         {
           "stop": "Madurai",
@@ -1851,7 +1370,9 @@
           "arrivals": 2,
           "total": 4
         }
-      ]
+      ],
+      "total_movement_flow": 8,
+      "state_share": 0.6
     },
     {
       "district": "Kodagu (KA)",
@@ -1865,8 +1386,10 @@
       "daily_arrivals": 0,
       "origin_departures": 0,
       "dest_arrivals": 0,
+      "enroute_transit": 4,
+      "distinct_daily_buses": 4,
       "total_flow": 4,
-      "total_movement_flow": 8,
+      "total_stop_calls": 4,
       "top_hubs": [
         {
           "stop": "Virajpet",
@@ -1874,7 +1397,9 @@
           "arrivals": 0,
           "total": 4
         }
-      ]
+      ],
+      "total_movement_flow": 8,
+      "state_share": 0.4
     },
     {
       "district": "Nagapattinam (TN)",
@@ -1888,8 +1413,10 @@
       "daily_arrivals": 1,
       "origin_departures": 1,
       "dest_arrivals": 1,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 2,
       "total_flow": 2,
-      "total_movement_flow": 2,
+      "total_stop_calls": 2,
       "top_hubs": [
         {
           "stop": "Velamkanni",
@@ -1897,7 +1424,9 @@
           "arrivals": 1,
           "total": 2
         }
-      ]
+      ],
+      "total_movement_flow": 2,
+      "state_share": 0.2
     },
     {
       "district": "Krishnagiri (TN)",
@@ -1911,8 +1440,10 @@
       "daily_arrivals": 0,
       "origin_departures": 0,
       "dest_arrivals": 0,
+      "enroute_transit": 2,
+      "distinct_daily_buses": 2,
       "total_flow": 2,
-      "total_movement_flow": 4,
+      "total_stop_calls": 2,
       "top_hubs": [
         {
           "stop": "Hosur",
@@ -1920,7 +1451,9 @@
           "arrivals": 0,
           "total": 2
         }
-      ]
+      ],
+      "total_movement_flow": 4,
+      "state_share": 0.2
     },
     {
       "district": "Tiruppur (TN)",
@@ -1934,8 +1467,10 @@
       "daily_arrivals": 1,
       "origin_departures": 0,
       "dest_arrivals": 1,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 1,
       "total_flow": 1,
-      "total_movement_flow": 1,
+      "total_stop_calls": 1,
       "top_hubs": [
         {
           "stop": "Udumalaipettai",
@@ -1943,7 +1478,9 @@
           "arrivals": 1,
           "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 1,
+      "state_share": 0.1
     },
     {
       "district": "Tirunelveli (TN)",
@@ -1957,8 +1494,10 @@
       "daily_arrivals": 1,
       "origin_departures": 0,
       "dest_arrivals": 1,
+      "enroute_transit": 0,
+      "distinct_daily_buses": 1,
       "total_flow": 1,
-      "total_movement_flow": 1,
+      "total_stop_calls": 1,
       "top_hubs": [
         {
           "stop": "Thirunelvely",
@@ -1966,7 +1505,9 @@
           "arrivals": 1,
           "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 1,
+      "state_share": 0.1
     },
     {
       "district": "Erode (TN)",
@@ -1980,8 +1521,10 @@
       "daily_arrivals": 0,
       "origin_departures": 0,
       "dest_arrivals": 0,
+      "enroute_transit": 1,
+      "distinct_daily_buses": 1,
       "total_flow": 1,
-      "total_movement_flow": 2,
+      "total_stop_calls": 1,
       "top_hubs": [
         {
           "stop": "Erode",
@@ -1989,7 +1532,9 @@
           "arrivals": 0,
           "total": 1
         }
-      ]
+      ],
+      "total_movement_flow": 2,
+      "state_share": 0.1
     }
   ],
   "service_distribution": [

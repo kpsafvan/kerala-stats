@@ -108,14 +108,18 @@ export const useTransitStore = defineStore('transit', {
 
     regionalBreakdown: (state) => {
       if (!state.dataset) return [];
-      const order: RegionName[] = ['North Kerala', 'Central Kerala', 'South Kerala', 'Inter-State'];
-      const totalDailyFlow = state.dataset.summary.total_daily_network_volume || 1;
+      const order: RegionName[] = ['South Kerala', 'Central Kerala', 'North Kerala', 'Inter-State'];
+      const totalRegionalDepartures = Object.values(state.dataset.regions).reduce(
+        (sum, r) => sum + (r.daily_departures || 0),
+        0
+      ) || 1;
 
       return order.map((regionKey) => {
         const metric: RegionalMetric | undefined = state.dataset!.regions[regionKey];
         const stopsInRegion = state.dataset!.vertices.filter((v) => v.region === regionKey);
         const regionalDepartures = metric?.daily_departures || 0;
-        const totalFlow = stopsInRegion.reduce((sum, v) => sum + v.total_daily_flow, 0);
+        const regionalArrivals = metric?.daily_arrivals || 0;
+        const totalFlow = metric?.distinct_buses || stopsInRegion.reduce((sum, v) => sum + v.total_daily_flow, 0);
 
         let color = '#3b82f6';
         let badgeClass = 'badge-central';
@@ -130,14 +134,17 @@ export const useTransitStore = defineStore('transit', {
           badgeClass = 'badge-interstate';
         }
 
+        const flowShare = metric?.departure_share ?? Math.round((regionalDepartures / totalRegionalDepartures) * 1000) / 10;
+
         return {
           regionKey,
           name: metric?.name || regionKey,
           districts: metric?.districts || [],
           stopsCount: metric?.stops_count || stopsInRegion.length,
           dailyDepartures: regionalDepartures,
-          totalFlow: Math.round(totalFlow * 10) / 10,
-          flowShare: Math.round((regionalDepartures / totalDailyFlow) * 1000) / 10,
+          dailyArrivals: regionalArrivals,
+          totalFlow,
+          flowShare,
           color,
           badgeClass
         };
