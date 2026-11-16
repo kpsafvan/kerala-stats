@@ -34,6 +34,16 @@ let lastZoomTime = 0;
 const isMac = typeof navigator !== 'undefined' && /Mac|iPod|iPhone|iPad/.test(navigator.platform || navigator.userAgent);
 const modifierKey = isMac ? '⌘' : 'Ctrl';
 
+// Mobile Sheet State
+const isMobileFilterModalOpen = ref(false);
+const hasActiveFilter = computed(() => {
+  return store.selectedRegion !== 'All' ||
+    store.minBusWeight > 0 ||
+    !isolateSouthIndia.value ||
+    !showEdges.value ||
+    !showMarkers.value;
+});
+
 let maskLayer: L.GeoJSON | null = null;
 let stateBoundaryLayer: L.GeoJSON | null = null;
 
@@ -573,6 +583,149 @@ onBeforeUnmount(() => {
       </div>
     </transition>
 
+    <!-- Mobile Floating Action Button (FAB) for Layers & Filters -->
+    <button
+      class="mobile-filter-fab"
+      @click="isMobileFilterModalOpen = true"
+      title="Open Map Layers & Filters"
+      type="button"
+    >
+      <span class="fab-icon">🧭</span>
+      <span class="fab-label">Layers &amp; Filters</span>
+      <span v-if="hasActiveFilter" class="fab-active-dot"></span>
+    </button>
+
+    <!-- Mobile Filters & Layers Bottom Sheet Modal -->
+    <transition name="mobile-sheet">
+      <div v-if="isMobileFilterModalOpen" class="mobile-modal-overlay" @click.self="isMobileFilterModalOpen = false">
+        <div class="mobile-filter-sheet">
+          <div class="sheet-drag-handle"></div>
+          
+          <div class="sheet-header">
+            <div class="sheet-title-group">
+              <span class="sheet-icon">🧭</span>
+              <div>
+                <h3 class="sheet-title">Map Layers &amp; Filters</h3>
+                <span class="sheet-sub">{{ store.filteredEdges.length }} corridors &bull; {{ store.filteredVertices.length }} stops</span>
+              </div>
+            </div>
+            <button class="sheet-close-btn" @click="isMobileFilterModalOpen = false" aria-label="Close filters">&times;</button>
+          </div>
+
+          <div class="sheet-body">
+            <!-- Quick View Extent Presets -->
+            <div class="sheet-section">
+              <span class="sheet-section-title">Quick Map Extent</span>
+              <div class="sheet-btn-row">
+                <button
+                  class="sheet-action-btn"
+                  @click="fitKeralaBounds(); isMobileFilterModalOpen = false;"
+                >
+                  🌴 Fit Kerala
+                </button>
+                <button
+                  class="sheet-action-btn"
+                  @click="fitSouthIndiaBounds(); isMobileFilterModalOpen = false;"
+                >
+                  🗺️ South India
+                </button>
+              </div>
+            </div>
+
+            <!-- Layer Toggles -->
+            <div class="sheet-section">
+              <span class="sheet-section-title">Display Layers</span>
+              <div class="sheet-toggle-grid">
+                <label class="sheet-toggle-item highlight-mask">
+                  <input type="checkbox" v-model="isolateSouthIndia" />
+                  <span><strong>South India Only</strong></span>
+                </label>
+                <label class="sheet-toggle-item">
+                  <input type="checkbox" v-model="showEdges" />
+                  <span>Corridors ({{ store.filteredEdges.length }})</span>
+                </label>
+                <label class="sheet-toggle-item">
+                  <input type="checkbox" v-model="showMarkers" />
+                  <span>Hubs ({{ store.filteredVertices.length }})</span>
+                </label>
+                <label class="sheet-toggle-item">
+                  <input type="checkbox" v-model="showLabels" />
+                  <span>Stop Labels</span>
+                </label>
+                <label class="sheet-toggle-item">
+                  <input type="checkbox" v-model="uniformMarkers" />
+                  <span>Uniform Dots</span>
+                </label>
+                <label class="sheet-toggle-item">
+                  <input type="checkbox" v-model="directWheelZoom" />
+                  <span>Free Wheel Zoom</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Min Frequency Filter -->
+            <div class="sheet-section">
+              <div class="sheet-label-row">
+                <span class="sheet-section-title">Min Daily Frequency</span>
+                <strong class="sheet-freq-val">{{ store.minBusWeight }} buses / day</strong>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="20"
+                step="1"
+                v-model.number="store.minBusWeight"
+                class="slider-input sheet-slider"
+              />
+              <div class="sheet-chips-row">
+                <button
+                  v-for="freq in frequencyLegendItems"
+                  :key="freq.min"
+                  :class="['sheet-chip', { active: store.minBusWeight === freq.min }]"
+                  @click="setFrequencyPreset(freq.min)"
+                >
+                  <span class="chip-color-bar" :style="{ backgroundColor: freq.color }"></span>
+                  <span>{{ freq.label.split('(')[0].trim() }}</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Regional Distinction -->
+            <div class="sheet-section">
+              <div class="sheet-label-row">
+                <span class="sheet-section-title">Regions</span>
+                <button
+                  v-if="store.selectedRegion !== 'All'"
+                  class="reset-micro-btn"
+                  @click="store.setSelectedRegion('All')"
+                >
+                  Reset All
+                </button>
+              </div>
+              <div class="sheet-chips-row">
+                <button
+                  v-for="r in regionalLegendItems"
+                  :key="r.key"
+                  :class="['sheet-chip', { active: store.selectedRegion === r.key }]"
+                  @click="toggleRegion(r.key)"
+                >
+                  <span class="chip-dot" :style="{ backgroundColor: r.color }"></span>
+                  <span>{{ r.key }}</span>
+                  <span class="chip-count">{{ r.count }}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="sheet-footer">
+            <button class="sheet-apply-btn" @click="isMobileFilterModalOpen = false">
+              Done ({{ store.filteredEdges.length }} corridors visible)
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <!-- Interactive Map Legend & Controls -->
     <div :class="['map-legend-card', { collapsed: isLegendCollapsed }]">
       <!-- Legend Header -->
@@ -708,6 +861,7 @@ onBeforeUnmount(() => {
 
     <!-- Stop Details Inspector Drawer -->
     <div v-if="store.selectedStop" class="inspector-drawer">
+      <div class="sheet-drag-handle"></div>
       <div class="drawer-header">
         <div>
           <span :class="['drawer-badge', store.selectedStop.region.toLowerCase().replace(/\s+/g, '-')]">
@@ -802,6 +956,7 @@ onBeforeUnmount(() => {
 
     <!-- Edge / Corridor Inspector Drawer -->
     <div v-if="store.selectedEdge" class="inspector-drawer">
+      <div class="sheet-drag-handle"></div>
       <div class="drawer-header">
         <div>
           <span class="drawer-badge edge-badge">Transit Corridor</span>
@@ -1613,5 +1768,365 @@ onBeforeUnmount(() => {
   font-size: 0.775rem;
   color: #94a3b8;
   font-style: italic;
+}
+
+/* Drag Handle for Bottom Sheets */
+.sheet-drag-handle {
+  width: 42px;
+  height: 4px;
+  background: #cbd5e1;
+  border-radius: 9999px;
+  margin: 0 auto 0.65rem;
+  display: none;
+}
+
+/* Mobile Floating Filter Button (Hidden on Desktop) */
+.mobile-filter-fab {
+  display: none;
+}
+
+/* Mobile Modal Overlay & Filter Sheet */
+.mobile-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.mobile-filter-sheet {
+  background: #ffffff;
+  width: 100%;
+  max-width: 540px;
+  max-height: 85vh;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem 1.25rem 1.5rem;
+  overflow: hidden;
+}
+
+.sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 0.75rem;
+}
+
+.sheet-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sheet-icon {
+  font-size: 1.3rem;
+}
+
+.sheet-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.sheet-sub {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.sheet-close-btn {
+  background: #f1f5f9;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.4rem;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sheet-body {
+  overflow-y: auto;
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.sheet-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.sheet-section-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sheet-btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.sheet-action-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.sheet-action-btn:active {
+  background: #f1f5f9;
+  transform: scale(0.98);
+}
+
+.sheet-toggle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.sheet-toggle-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.775rem;
+  color: #334155;
+  background: #f8fafc;
+  padding: 0.45rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+.sheet-toggle-item.highlight-mask {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+.sheet-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sheet-freq-val {
+  font-size: 0.8rem;
+  color: #e11d48;
+}
+
+.sheet-slider {
+  width: 100%;
+}
+
+.sheet-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.sheet-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.sheet-chip.active {
+  background: #fff1f2;
+  border-color: #fecdd3;
+  color: #be123c;
+}
+
+.chip-color-bar {
+  width: 14px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.chip-count {
+  font-size: 0.7rem;
+  opacity: 0.75;
+}
+
+.sheet-footer {
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.sheet-apply-btn {
+  width: 100%;
+  background: #e11d48;
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(225, 29, 72, 0.3);
+  transition: all 0.15s;
+}
+
+.sheet-apply-btn:active {
+  transform: scale(0.98);
+}
+
+/* Animations */
+.mobile-sheet-enter-active,
+.mobile-sheet-leave-active {
+  transition: opacity 0.22s ease;
+}
+
+.mobile-sheet-enter-active .mobile-filter-sheet,
+.mobile-sheet-leave-active .mobile-filter-sheet {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-sheet-enter-from,
+.mobile-sheet-leave-to {
+  opacity: 0;
+}
+
+.mobile-sheet-enter-from .mobile-filter-sheet,
+.mobile-sheet-leave-to .mobile-filter-sheet {
+  transform: translateY(100%);
+}
+
+/* =========================================================
+   Mobile Touch & Screen Media Queries (< 768px)
+   ========================================================= */
+@media (max-width: 768px) {
+  .map-view-container {
+    height: calc(100dvh - 54px - 60px);
+    min-height: calc(100dvh - 54px - 60px);
+  }
+
+  /* Hide desktop legend card on phone */
+  .map-legend-card {
+    display: none;
+  }
+
+  /* Show Mobile FAB */
+  .mobile-filter-fab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    position: absolute;
+    bottom: 1.25rem;
+    left: 1rem;
+    z-index: 500;
+    background: #0f172a;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 9999px;
+    padding: 0.65rem 1.15rem;
+    font-size: 0.825rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+
+  .mobile-filter-fab:active {
+    transform: scale(0.96);
+  }
+
+  .fab-active-dot {
+    width: 7px;
+    height: 7px;
+    background: #e11d48;
+    border-radius: 50%;
+    box-shadow: 0 0 6px #e11d48;
+  }
+
+  /* Simplify top overlay controls */
+  .map-overlay-controls {
+    top: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .map-overlay-controls .frequency-slider-group,
+  .map-overlay-controls .active-map-badges {
+    display: none;
+  }
+
+  .search-box-wrapper {
+    width: 100%;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    border-radius: 10px;
+    background: #ffffff;
+  }
+
+  .search-dropdown {
+    width: 100%;
+    max-height: 240px;
+  }
+
+  /* Transform desktop sidebar into app-style Bottom Sheet */
+  .inspector-drawer {
+    position: fixed;
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 60px; /* Aligns right above mobile bottom nav */
+    width: 100%;
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -12px 35px rgba(0, 0, 0, 0.3);
+    z-index: 1050;
+    padding: 0.85rem 1.25rem 1.5rem;
+    animation: slideUpSheet 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .sheet-drag-handle {
+    display: block;
+  }
+
+  @keyframes slideUpSheet {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
 }
 </style>

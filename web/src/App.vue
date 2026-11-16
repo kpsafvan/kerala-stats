@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { useTransitStore } from '@/stores/useTransitStore';
+import { useTransitStore, type AppTab } from '@/stores/useTransitStore';
 import AppHeader from '@/components/AppHeader.vue';
 import MetricCard from '@/components/MetricCard.vue';
 import TransitMap from '@/components/TransitMap.vue';
@@ -13,6 +13,13 @@ import DisclaimerModal from '@/components/DisclaimerModal.vue';
 
 const store = useTransitStore();
 const isDisclaimerOpen = ref(false);
+
+const mobileNavItems: { key: AppTab; label: string; icon: string }[] = [
+  { key: 'map', label: 'Map', icon: '🗺️' },
+  { key: 'analytics', label: 'Analytics', icon: '📊' },
+  { key: 'districts', label: 'Districts', icon: '🏛️' },
+  { key: 'corridors', label: 'Corridors', icon: '⚡' }
+];
 
 onMounted(() => {
   store.loadTransitData();
@@ -42,7 +49,7 @@ onMounted(() => {
     <!-- Main Content Area -->
     <main v-else-if="store.isReady" class="main-content">
       <!-- High-Level KPI Summary Grid (Always visible above tabs or inside tabs) -->
-      <section v-if="store.summary" class="kpi-grid">
+      <section v-if="store.summary" :class="['kpi-grid', { 'mobile-hidden-on-map': store.activeTab === 'map' }]">
         <MetricCard
           title="Daily Network Volume"
           :value="`${store.summary.total_daily_network_volume.toLocaleString()} buses`"
@@ -109,7 +116,7 @@ onMounted(() => {
     </main>
 
     <!-- Dedicated Disclaimer Section -->
-    <section class="app-disclaimer-section">
+    <section :class="['app-disclaimer-section', { 'mobile-hidden-on-map': store.activeTab === 'map' }]">
       <div class="disclaimer-inner">
         <div class="disclaimer-header-row">
           <div class="disclaimer-title-wrap">
@@ -128,7 +135,7 @@ onMounted(() => {
     </section>
 
     <!-- Footer -->
-    <footer class="app-footer">
+    <footer :class="['app-footer', { 'mobile-hidden-on-map': store.activeTab === 'map' }]">
       <div class="footer-inner">
         <div>
           <strong>KSRTC Kerala Transit &amp; Route Network Visualization</strong>
@@ -161,6 +168,19 @@ onMounted(() => {
       <span class="corner-warning-icon">⚠️</span>
       <span class="corner-disclaimer-text">Unofficial &bull; For Fun Only &bull; <strong>Disclaimer</strong></span>
     </aside>
+
+    <!-- Mobile Bottom Thumb Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+      <button
+        v-for="t in mobileNavItems"
+        :key="t.key"
+        :class="['mobile-nav-btn', { active: store.activeTab === t.key }]"
+        @click="store.setActiveTab(t.key)"
+      >
+        <span class="mobile-nav-icon">{{ t.icon }}</span>
+        <span class="mobile-nav-label">{{ t.label }}</span>
+      </button>
+    </nav>
 
     <!-- Full Legal Disclaimer Modal -->
     <DisclaimerModal :isOpen="isDisclaimerOpen" @close="isDisclaimerOpen = false" />
@@ -458,5 +478,99 @@ onMounted(() => {
 
 .corner-disclaimer-text strong {
   text-decoration: underline;
+}
+
+/* Mobile Bottom Navigation Bar (Thumb Bar) */
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.97);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    z-index: 1000;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .mobile-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    flex: 1;
+    height: 100%;
+  }
+
+  .mobile-nav-btn.active {
+    color: #e11d48;
+    background: #fff1f2;
+  }
+
+  .mobile-nav-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .mobile-hidden-on-map {
+    display: none !important;
+  }
+
+  .main-content {
+    padding-bottom: 70px;
+  }
+
+  .kpi-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .kpi-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .kpi-grid > * {
+    min-width: 220px;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .persistent-corner-disclaimer {
+    bottom: 68px;
+    right: 0.75rem;
+    font-size: 0.7rem;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .persistent-corner-disclaimer.offset-for-map {
+    right: 0.75rem;
+    bottom: 68px;
+  }
 }
 </style>

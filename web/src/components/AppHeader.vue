@@ -363,4 +363,38 @@ const tabs: { key: AppTab; label: string; icon: string }[] = [
     align-items: flex-start;
   }
 }
+
+@media (max-width: 768px) {
+  .header-controls {
+    display: none; /* Replaced by mobile bottom navigation and map FAB */
+  }
+
+  .header-top {
+    padding: 0.55rem 1rem;
+  }
+
+  .brand {
+    gap: 0.6rem;
+  }
+
+  .brand-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+  }
+
+  .brand-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .brand-title {
+    font-size: 0.975rem;
+    line-height: 1.2;
+  }
+
+  .brand-sub {
+    font-size: 0.7rem;
+  }
+}
 </style>
